@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { testConnection } from './lib/supabase';
 
 // Layout components
 import Layout from './components/layout/Layout';
@@ -24,6 +25,14 @@ import NobetOlustur from './pages/nobet/NobetOlustur';
 import Raporlar from './pages/nobet/Raporlar';
 
 function App() {
+  useEffect(() => {
+    const testDbConnection = async () => {
+      const isConnected = await testConnection();
+      console.log('Database connection status:', isConnected);
+    };
+    testDbConnection();
+  }, []);
+
   return (
     <Router>
       <Routes>
