@@ -48,11 +48,10 @@ const PersonelEkle: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const { name, surname, title, tcno } = formData;
+    const { name, surname, tcno } = formData;
     const isValid = Boolean(
       name.trim() && 
       surname.trim() && 
-      title.trim() && 
       tcno.trim() && 
       tcno.length === 11
     );
@@ -60,12 +59,10 @@ const PersonelEkle: React.FC = () => {
 
     if (!isValid) {
       setValidationMessage('Personel Bilgilerini Giriniz');
-    } else if (!hasNobetTanimlama) {
-      setValidationMessage('En Az Bir Nöbet Tanımlayın');
     } else {
       setValidationMessage('');
     }
-  }, [formData, hasNobetTanimlama]);
+  }, [formData]);
 
   const tabs = [
     { id: 'bilgiler', name: 'Personel Bilgileri' },
@@ -114,7 +111,7 @@ const PersonelEkle: React.FC = () => {
             <UserPlus className="w-6 h-6 text-blue-600" />
             <h2 className="text-xl font-semibold">Personel Ekle</h2>
           </div>
-          {validationMessage && !hasNobetTanimlama && (
+          {validationMessage && (
             <div className="mt-2 text-red-600 text-sm font-medium">
               {validationMessage}
             </div>
@@ -123,9 +120,9 @@ const PersonelEkle: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!isFormValid || !hasNobetTanimlama}
+            disabled={!isFormValid}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              isFormValid && hasNobetTanimlama
+              isFormValid
                 ? 'bg-green-600 text-white hover:bg-green-700' 
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
