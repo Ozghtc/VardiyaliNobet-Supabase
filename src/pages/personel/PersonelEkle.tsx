@@ -85,13 +85,13 @@ const PersonelEkle: React.FC = () => {
         phone: formData.phone,
         department: formData.department,
         position: formData.position,
-        startDate: formData.startDate,
-        istekTuru: formData.istekTuru,
-        baslangicTarihi: formData.baslangicTarihi,
-        bitisTarihi: formData.bitisTarihi,
-        tekrarlaniyorMu: formData.tekrarlaniyorMu,
+        startdate: formData.startDate,
+        istekuru: formData.istekTuru,
+        baslangictarihi: formData.baslangicTarihi,
+        bitistarihi: formData.bitisTarihi,
+        tekrarlaniyormu: formData.tekrarlaniyorMu,
         aciklama: formData.aciklama,
-        hasLoginPage: formData.hasLoginPage,
+        hasloginpage: formData.hasLoginPage,
         password: formData.password
       }
     ]);
