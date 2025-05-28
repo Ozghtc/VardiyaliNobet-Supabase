@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Pencil, Trash2, MoreVertical, Mail, Phone, Building2, ArrowRight, Clock, Calendar, User2 } from 'lucide-react';
 import DeleteConfirmDialog from '../../components/ui/DeleteConfirmDialog';
+import { supabase } from '../../lib/supabase';
 
 interface Personnel {
   id: number;
@@ -27,6 +28,7 @@ interface Personnel {
     endDate: string;
     description: string;
   }[];
+  kurum?: string;
 }
 
 const PersonelListesi: React.FC = () => {
@@ -38,23 +40,13 @@ const PersonelListesi: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedPersonnel = localStorage.getItem('personel');
-    const savedAreas = localStorage.getItem('tanimliAlanlar');
-    
-    if (savedPersonnel) {
-      let parsedPersonnel = JSON.parse(savedPersonnel);
-      
-      // Add areas if available
-      if (savedAreas) {
-        const areas = JSON.parse(savedAreas);
-        parsedPersonnel = parsedPersonnel.map((person: Personnel) => ({
-          ...person,
-          areas: areas.slice(0, 3) // Just for demo, showing first 3 areas
-        }));
+    const fetchPersonnel = async () => {
+      const { data, error } = await supabase.from('personnel').select('*');
+      if (!error && data) {
+        setPersonnel(data);
       }
-      
-      setPersonnel(parsedPersonnel);
-    }
+    };
+    fetchPersonnel();
   }, []);
 
   const handleDelete = (id: number) => {
@@ -100,7 +92,7 @@ const PersonelListesi: React.FC = () => {
                     >
                       <td className="px-6 py-4">
                         <div>
-                          <div className="font-medium text-gray-900">{person.firstName} {person.lastName}</div>
+                          <div className="font-medium text-gray-900">{person.name} {person.surname}</div>
                           <div className="text-sm text-gray-500">{person.tcno}</div>
                           <div className="text-sm text-blue-600">{person.title}</div>
                         </div>
@@ -175,7 +167,7 @@ const PersonelListesi: React.FC = () => {
                   <User2 className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{selectedPerson.firstName} {selectedPerson.lastName}</h3>
+                  <h3 className="font-semibold text-gray-900">{selectedPerson.name} {selectedPerson.surname}</h3>
                   <p className="text-sm text-gray-500">{selectedPerson.title}</p>
                 </div>
               </div>
@@ -189,10 +181,12 @@ const PersonelListesi: React.FC = () => {
                   <Phone className="w-4 h-4" />
                   <span>{selectedPerson.phone}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Building2 className="w-4 h-4" />
-                  <span>{selectedPerson.kurum}</span>
-                </div>
+                {selectedPerson.kurum && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Building2 className="w-4 h-4" />
+                    <span>{selectedPerson.kurum}</span>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

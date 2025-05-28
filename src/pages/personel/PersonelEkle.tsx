@@ -5,6 +5,7 @@ import PersonelBilgileri from './PersonelBilgileri';
 import PersonelNobetTanimlama from './PersonelNobetTanimlama';
 import GirisBilgileri from './GirisBilgileri';
 import PersonelIstek from './PersonelIstek';
+import { supabase } from '../../lib/supabase';
 
 const PersonelEkle: React.FC = () => {
   const [activeTab, setActiveTab] = useState('bilgiler');
@@ -71,21 +72,34 @@ const PersonelEkle: React.FC = () => {
     { id: 'istek', name: 'İstek ve İzinler' }
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!isFormValid) return;
-    
-    const savedPersonnel = localStorage.getItem('personeller');
-    const personeller = savedPersonnel ? JSON.parse(savedPersonnel) : [];
-    
-    const newPersonel = {
-      id: Date.now(),
-      ...formData
-    };
-    
-    personeller.push(newPersonel);
-    localStorage.setItem('personeller', JSON.stringify(personeller));
-    
-    navigate(-1);
+    // Supabase'a kayıt
+    const { error } = await supabase.from('personnel').insert([
+      {
+        name: formData.name,
+        surname: formData.surname,
+        title: formData.title,
+        tcno: formData.tcno,
+        email: formData.email,
+        phone: formData.phone,
+        department: formData.department,
+        position: formData.position,
+        startDate: formData.startDate,
+        istekTuru: formData.istekTuru,
+        baslangicTarihi: formData.baslangicTarihi,
+        bitisTarihi: formData.bitisTarihi,
+        tekrarlaniyorMu: formData.tekrarlaniyorMu,
+        aciklama: formData.aciklama,
+        hasLoginPage: formData.hasLoginPage,
+        password: formData.password
+      }
+    ]);
+    if (!error) {
+      navigate(-1);
+    } else {
+      alert('Kayıt sırasında hata oluştu: ' + error.message);
+    }
   };
 
   const renderContent = () => {
